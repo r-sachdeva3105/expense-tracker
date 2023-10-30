@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer, useEffect } from "react";
 import AppReducer from "./AppReducer";
 
 const localStorageTransactions = JSON.parse(
@@ -20,19 +20,23 @@ export const GlobalProvider = ({ children }) => {
             type: 'DELETE',
             payload: id
         });
-        updateLocalStorage();
     }
+
     function addTransaction(transaction) {
         dispatch({
             type: 'ADD',
             payload: transaction
         });
-        updateLocalStorage();
     }
+
+    useEffect(() => {
+        updateLocalStorage();
+    }, [state.transactions]);
+
     function updateLocalStorage() {
         localStorage.setItem('transactions', JSON.stringify(state.transactions));
-        console.log(state.transactions);
     }
+
     return (<GlobalContext.Provider value={{
         transactions: state.transactions,
         deleteTransaction,
